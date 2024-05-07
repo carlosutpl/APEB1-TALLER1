@@ -1,0 +1,169 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Main.java to edit this template
+ */
+package examenparcial;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Scanner;
+
+/**
+ *
+ * @author utpl
+ */
+public class ClaseMain {
+
+    /**
+     * @param args the command line arguments
+     */
+    
+    
+    public static double generarPromedio(){
+        int numNotas = 3;
+        int contador = 0;
+        for(int i = 0; i < numNotas; i++){
+            contador += Math.random() * (10 - 1 + 1) + 1;
+        }
+        
+        return contador / 3;
+    }
+    public static void main(String[] args) {
+        //Crear el archivo:
+        String fileName = "Aula.txt";
+        int idActual = 0;
+        Scanner sc = new Scanner(System.in);
+
+        System.out.println("Sistema de insertar 5 alumnos en Aula.txt");
+        System.out.println("------------------------------------");
+        //Leer los datos y almacenarlos
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
+
+            int notaMinima = 1;
+            int notaMaxima = 10;
+            while (idActual < 5) {
+                System.out.println("Ingrese el nombre del estudiante " + idActual);
+                String nombre = sc.nextLine();
+
+                //Generar random numbers
+                
+                //Para calculo:
+                double promedioCalculo = generarPromedio();
+
+                //Para programacion:
+                double promedioProgramacion = generarPromedio();
+
+                //Para logica:
+                double promedioLogica = generarPromedio();
+
+                writer.write(idActual + "\n");
+                writer.write(nombre + "\n");
+                writer.write(String.format("%.2f", promedioCalculo) + "\n");
+                writer.write(String.format("%.2f", promedioProgramacion) + "\n");
+                writer.write(String.format("%.2f", promedioLogica) + "\n");
+
+                writer.write("-------------------------------- \n");
+
+                idActual++;
+
+            }
+            writer.close();
+
+        } catch (Exception e) {
+            System.out.println("Algo malio sal");
+        }
+
+        //Leer los nombres y las notas promedio;
+        String[] nombres = new String[idActual]; //idActual es en cuantos elementos se quedo
+
+        double[] calculo = new double[idActual];
+
+        double[] programacion = new double[idActual];
+
+        double[] logica = new double[idActual];
+
+        //Leer archivo creado
+        try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
+
+            String lineaActual = reader.readLine();
+            int contadorLineas = 0;
+            int alumnoActual = 0;
+            while (lineaActual != null) {
+
+                //Cada vez que pase por un "------" es porque esta yendo de un alumno hacia otro. Ver en el archivo
+                if (contadorLineas == 5) {
+                    alumnoActual++;
+                    contadorLineas = 0;
+                    lineaActual = reader.readLine();
+                    continue;
+                }
+
+                switch (contadorLineas) {
+                    case 1 ->
+                        nombres[alumnoActual] = lineaActual;
+
+                    case 2 ->
+                        calculo[alumnoActual] = Double.parseDouble(lineaActual.replaceAll(",", "."));
+                    case 3 ->
+                        programacion[alumnoActual] = Double.parseDouble(lineaActual.replaceAll(",", "."));
+
+                    case 4 ->
+                        logica[alumnoActual] = Double.parseDouble(lineaActual.replaceAll(",", "."));
+
+                }
+                
+                lineaActual = reader.readLine();
+                contadorLineas++;
+            }
+
+        } catch (Exception e) {
+            System.out.println("Error " + e);
+        }
+        
+        System.out.println("-----------------------------");
+        System.out.println("Reportes de estudiantes aprobados");
+        System.out.println("-----------------------------");
+        
+        System.out.println("\n Calculo: \n" + presentarAprobadosCalculo(nombres, calculo));
+        System.out.println("\n Programacion: \n" + presentarAprobadosProgramacion(nombres, programacion));
+        System.out.println("\n Logica: \n" + presentarAprobadosLogica(nombres, logica));
+     
+
+    }
+
+    private static String presentarAprobadosCalculo(String[] nombres, double[] calculo) {
+        String resultado = "";
+        for(int i = 0; i < nombres.length; i++){
+            double notaActual = calculo[i];
+            if(notaActual >= 7){
+                resultado += nombres[i] + " esta aprobado en calculo con una nota de: " + notaActual + "\n"; 
+            }
+        }
+        return resultado;
+    }
+     private static String presentarAprobadosProgramacion(String[] nombres, double[] programacion) {
+        String resultado = "";
+        for(int i = 0; i < nombres.length; i++){
+            double notaActual = programacion[i];
+            if(notaActual >= 7){
+                resultado += nombres[i] + " esta aprobado en programacion con una nota de: " + notaActual + "\n"; 
+            }
+        }
+        return resultado;
+    }
+     
+      private static String presentarAprobadosLogica(String[] nombres, double[] logica) {
+        String resultado = "";
+        for(int i = 0; i < nombres.length; i++){
+            double notaActual = logica[i];
+            if(notaActual >= 7){
+                resultado += nombres[i] + " esta aprobado en logica con una nota de: " + notaActual + "\n"; 
+            }
+        }
+        return resultado;
+    }
+
+}
